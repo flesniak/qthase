@@ -3,9 +3,11 @@
 
 #include <QMainWindow>
 #include <QUrl>
+#include <QString>
 
-class QTextEdit;
+class QPlainTextEdit;
 class WebView;
+class QAction;
 
 class QtHase : public QMainWindow
 {
@@ -16,14 +18,17 @@ public:
     ~QtHase();
 
 private:
-    QTextEdit* p_editor;
+    QPlainTextEdit* p_editor;
     WebView* p_view;
+    QString p_fileName;
+    QAction* p_actionSave;
 
 private slots:
     void updateView();
     void loadUrl(const QUrl& url);
     void openDocument();
     void saveDocument();
+    void saveDocumentAs();
     void goNext();
     void goBack();
 };
