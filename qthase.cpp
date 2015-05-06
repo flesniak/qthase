@@ -2,6 +2,7 @@
 
 #include "text.h"
 #include "webview.h"
+#include "inspector.h"
 
 #include <QAction>
 #include <QDir>
@@ -48,6 +49,9 @@ QtHase::QtHase(QWidget *parent) : QMainWindow(parent) {
     QAction* actionRefresh = toolbar->addAction(QIcon::fromTheme("view-refresh"),trUtf8("Aktualisieren"));
     QAction* actionBack = toolbar->addAction(QIcon::fromTheme("go-previous"),trUtf8("Zurück"));
     QAction* actionNext = toolbar->addAction(QIcon::fromTheme("go-next"),trUtf8("Forwärts"));
+    toolbar->addSeparator();
+    QAction* actionShowInspector = toolbar->addAction(QIcon::fromTheme("edit-find"),trUtf8("Inspektor anzeigen"));
+    actionShowInspector->setCheckable(true);
     p_actionSave->setEnabled(false);
 
     connect(p_editor,SIGNAL(textChanged()),SLOT(updateView()));
@@ -60,13 +64,25 @@ QtHase::QtHase(QWidget *parent) : QMainWindow(parent) {
     connect(actionRefresh,SIGNAL(triggered()),SLOT(updateView()));
     connect(actionBack,SIGNAL(triggered()),SLOT(goBack()));
     connect(actionNext,SIGNAL(triggered()),SLOT(goNext()));
+    connect(actionShowInspector,SIGNAL(triggered(bool)),SLOT(toggleInspector(bool)));
 
     p_editor->setPlainText(text::startupText);
+
     updateView();
+
+    QWebSettings::globalSettings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
+    p_inspector = new inspector();
+    p_inspector->setPage(p_view->page());
+    connect(p_inspector,SIGNAL(visibilityChanged(bool)),actionShowInspector,SLOT(setChecked(bool)));
 }
 
 QtHase::~QtHase() {
+    p_inspector->close();
+}
 
+void QtHase::closeEvent(QCloseEvent *event) {
+    p_inspector->close();
+    QMainWindow::closeEvent(event);
 }
 
 void QtHase::updateView() {
@@ -128,3 +144,8 @@ void QtHase::goNext() {
     if( p_view->history()->canGoForward() )
         p_view->forward();
 }
+
+void QtHase::toggleInspector(bool on) {
+    p_inspector->setVisible(on);
+}
+

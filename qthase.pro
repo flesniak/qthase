@@ -14,9 +14,11 @@ TEMPLATE = app
 QMAKE_CXXFLAGS += -Wall -Werror
 
 SOURCES += main.cpp\
-        qthase.cpp \
+    qthase.cpp \
+    inspector.cpp \
     webview.cpp
 
 HEADERS  += qthase.h \
     webview.h \
+    inspector.h \
     text.h
