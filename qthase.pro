@@ -18,4 +18,5 @@ SOURCES += main.cpp\
     webview.cpp
 
 HEADERS  += qthase.h \
-    webview.h
+    webview.h \
+    text.h

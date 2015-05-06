@@ -1,5 +1,6 @@
 #include "qthase.h"
 
+#include "text.h"
 #include "webview.h"
 
 #include <QAction>
@@ -25,6 +26,7 @@ QtHase::QtHase(QWidget *parent) : QMainWindow(parent) {
     QFontMetrics fontMet(font);
     p_editor->setFont(font);
     p_editor->setTabStopWidth(fontMet.width(QString(TABSTOP,'x')));
+    p_editor->setTabChangesFocus(false);
 
     p_view = new WebView();
 
@@ -59,6 +61,7 @@ QtHase::QtHase(QWidget *parent) : QMainWindow(parent) {
     connect(actionBack,SIGNAL(triggered()),SLOT(goBack()));
     connect(actionNext,SIGNAL(triggered()),SLOT(goNext()));
 
+    p_editor->setPlainText(text::startupText);
     updateView();
 }
 
