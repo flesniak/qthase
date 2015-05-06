@@ -77,7 +77,6 @@ QtHase::QtHase(QWidget *parent) : QMainWindow(parent) {
 }
 
 QtHase::~QtHase() {
-    p_inspector->close();
 }
 
 void QtHase::closeEvent(QCloseEvent *event) {
@@ -87,6 +86,7 @@ void QtHase::closeEvent(QCloseEvent *event) {
 
 void QtHase::updateView() {
     p_view->setHtml(p_editor->toPlainText());
+    p_actionSave->setEnabled(true);
 }
 
 void QtHase::loadUrl(const QUrl &url) {
@@ -100,10 +100,10 @@ void QtHase::openDocument() {
         if( file.open(QFile::ReadOnly | QFile::Text) ) {
             p_editor->setPlainText(file.readAll());
             p_fileName = fileName;
+            p_actionSave->setEnabled(false); //load successful
         } else
             QMessageBox::critical(this,trUtf8("Fehler"),trUtf8("Fehler beim Öffnen der Datei"));
     }
-    p_actionSave->setEnabled(!p_fileName.isEmpty());
 }
 
 void QtHase::saveDocument() {
@@ -116,13 +116,13 @@ void QtHase::saveDocument() {
                 p_fileName.clear();
             }
             file.close();
+            p_actionSave->setEnabled(false); //save successful
         } else {
             QMessageBox::critical(this,trUtf8("Fehler"),trUtf8("Fehler beim Speichern der Datei"));
             p_fileName.clear();
         }
     } else
         saveDocumentAs(); //if no filename is set yet, ask for one.
-    p_actionSave->setEnabled(!p_fileName.isEmpty());
 }
 
 void QtHase::saveDocumentAs() {
@@ -148,4 +148,3 @@ void QtHase::goNext() {
 void QtHase::toggleInspector(bool on) {
     p_inspector->setVisible(on);
 }
-
